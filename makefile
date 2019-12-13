@@ -6,7 +6,7 @@ Server.o:Server.cpp
 RpcServer.o:./RpcSrc/RpcServer.cpp
 	g++ -g  -c ./RpcSrc/RpcServer.cpp
 ServType.o:./RpcSrc/ServType.cpp
-	g++  -g -c ./RpcSrc/ServType.cpp
+	g++ -g  -c ./RpcSrc/ServType.cpp
 clean:
 	rm -rf *.o 
 	rm ./Server

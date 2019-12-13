@@ -36,7 +36,7 @@ class ServTCP : public serverType{              //TCP服务器
     boost::asio::ip::tcp::acceptor mAcceptor;     //tcp所需要的acceptor
     boost::asio::ip::tcp::socket   mSocket;       //临时的Socket
     char mBuffer[5000];                         //全局缓冲区
-    std::unordered_map<std::string,SockPtr> ClientMap;
+
 
     void HandleAccept(const boost::system::error_code& ec,SockPtr sp,int size);
     void HandleRead(const boost::system::error_code& ec,SockPtr sp);
@@ -53,8 +53,6 @@ public:
     {
     
     }
-    
-    
     virtual void startServ(){           //TCP服务器的启动
         //1.注册accept消息
         accept();

@@ -11,6 +11,7 @@
 //TCP
 void ServTCP::accept(){
     //异步调用处理接收
+    msg(info,"new SockPtr");
     SockPtr sp(new boost::asio::ip::tcp::socket(mio_Serv));
     mAcceptor.async_accept(
         *sp,
@@ -35,16 +36,16 @@ void ServTCP::HandleRead(const boost::system::error_code& ec,SockPtr sp){
 void ServTCP::HandleAccept(const boost::system::error_code& ec,SockPtr sp,int size){
     if(size==0){        //telnet在断开时会发送一个0字节的tcp包，必须在这里处理
         msg(error,"Client has disconnect");
-        mSocket.close();
-        accept();
+        //char c[5];
+        //sprintf(c,"%ld次",sp.use_count());
+        //msg(info,"Client use count:"+std::string(c));
+        sp->close();
+        sp.reset();     //reset析构socket对象
+        //sprintf(c,"%ld次",sp.use_count());
+        //msg(info,"Client use count:"+std::string(c));
         return;
     }
     msg(info,mBuffer);
-    /*char count[5];
-    sprintf(count,"%ld次",sp.use_count());
-    char port_[5];
-    sprintf(port_,"%d",sp->remote_endpoint().port());
-    msg(info,std::string(port_)+" shared_ptr 引用 "+count);*/
     //处理客户端accept
     sp->async_write_some(
         boost::asio::buffer("Server has get your TCP request"),
