@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.db": "db",
+        "ostream": "cpp"
+    }
+}

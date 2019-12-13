@@ -7,7 +7,7 @@
 #include <boost/bind.hpp>
 #include <memory>
 #include <iostream>
-#include <cstdlib>
+
 //TCP
 void ServTCP::accept(){
     //异步调用处理接收
@@ -35,18 +35,19 @@ void ServTCP::HandleRead(const boost::system::error_code& ec,SockPtr sp){
 }
 void ServTCP::HandleAccept(const boost::system::error_code& ec,SockPtr sp,int size){
     if(size==0){        //telnet在断开时会发送一个0字节的tcp包，必须在这里处理
-        msg(error,"Client has disconnect");
-        //char c[5];
-        //sprintf(c,"%ld次",sp.use_count());
-        //msg(info,"Client use count:"+std::string(c));
+        char port_[5];
+        sprintf(port_,":%d",sp->remote_endpoint().port);
+        msg(error,sp->remote_endpoint().address().to_string()+port_+" has disconnected.");
         sp->close();
         sp.reset();     //reset析构socket对象
-        //sprintf(c,"%ld次",sp.use_count());
-        //msg(info,"Client use count:"+std::string(c));
         return;
     }
-    msg(info,mBuffer);
+
     //处理客户端accept
+    /*
+        RPC服务器的操作在这里
+    */
+    
     sp->async_write_some(
         boost::asio::buffer("Server has get your TCP request"),
         boost::bind(
