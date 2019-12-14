@@ -4,7 +4,7 @@
 using namespace std;
 int main(){
     CppRpcServer serv(
-        new ServTCP(40232)
+        new ServTCP(40232,"./DynamicSo/")
     );
 
     move(thread(

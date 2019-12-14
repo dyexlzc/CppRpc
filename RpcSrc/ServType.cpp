@@ -3,6 +3,7 @@
 */
 #include "ServType.h"
 #include "Msg.h"
+#include "../DynamicSo/interface.h"
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <memory>
@@ -36,20 +37,29 @@ void ServTCP::HandleRead(const boost::system::error_code& ec,SockPtr sp){
 void ServTCP::HandleAccept(const boost::system::error_code& ec,SockPtr sp,int size){
     if(size==0){        //telnet在断开时会发送一个0字节的tcp包，必须在这里处理
         char port_[5];
-        sprintf(port_,":%d",sp->remote_endpoint().port);
+        sprintf(port_,":%d",sp->remote_endpoint().port());
         msg(error,sp->remote_endpoint().address().to_string()+port_+" has disconnected.");
         sp->close();
         sp.reset();     //reset析构socket对象
-        return;
+        //return;
+        HandleNull(ec);
     }
 
     //处理客户端accept
     /*
         RPC服务器的操作在这里
     */
-    
+    //buffere中数据的格式一定是DynamicSo/interface.h/NetMsg 的格式，客户端也要遵守这个格式打包数据
+    NetMsg msg;
+    memcpy(&msg,mBuffer,sizeof(msg));
+    dynamicFunc.Call(                       //获取动态调用
+        msg.FuncName,
+        msg.Param,
+        mBuffer
+    );
+    //处理完成,结果存放在mBuffer中，发回给客户端，然后客户端再根据自己传的数据来自己解析
     sp->async_write_some(
-        boost::asio::buffer("Server has get your TCP request"),
+        boost::asio::buffer(mBuffer),
         boost::bind(
             &ServTCP::HandleRead,
             this,
@@ -57,7 +67,6 @@ void ServTCP::HandleAccept(const boost::system::error_code& ec,SockPtr sp,int si
             sp
         )
     );
-    //doing...
     
 }   
 //////////////////////////////////////////////////////////////////////////////////

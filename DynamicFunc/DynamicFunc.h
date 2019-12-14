@@ -1,11 +1,7 @@
 #ifndef _DF_H_
 #define _DF_H_
 #include "../DynamicSo/dLoad.hpp"   //引入ds文件
-/////////////////////////////////////////////////////////
-struct netMsg{                      //网络上传递过来调用函数格式
-    char FuncName[20];              //函数名称
-    char Param[1024];               //存放函数参数的缓冲区，至于函数参数将会被填充到什么样的结构体里需要动态加载so中的定义
-};
+
 ////////////////////////////////////////////////////////
 class DynamicFunc{
     std::string soPath;

@@ -1,6 +1,7 @@
 #ifndef _SERVTYPE_H_
 #define _SERVTYPE_H_
 #include "CppRpc.h"
+#include "../DynamicFunc/DynamicFunc.h"
 #include <unordered_map>
 using SockPtr=std::shared_ptr<boost::asio::ip::tcp::socket>;    //智能指针
 //实现UDP TCP的服务器端
@@ -36,6 +37,7 @@ class ServTCP : public serverType{              //TCP服务器
     boost::asio::ip::tcp::acceptor mAcceptor;     //tcp所需要的acceptor
     boost::asio::ip::tcp::socket   mSocket;       //临时的Socket
     char mBuffer[5000];                         //全局缓冲区
+    DynamicFunc dynamicFunc;                    //用于动态接受函数call
 
 
     void HandleAccept(const boost::system::error_code& ec,SockPtr sp,int size);
@@ -46,10 +48,11 @@ class ServTCP : public serverType{              //TCP服务器
     virtual void accept();
     
 public:
-    ServTCP(int port):
+    ServTCP(int port,std::string soPath):
         serverType(port),               //初始化端口
         mAcceptor(mio_Serv,boost::asio::ip::tcp::endpoint( boost::asio::ip::tcp::v4(),port)),
-        mSocket(mio_Serv)
+        mSocket(mio_Serv),
+        dynamicFunc(soPath)
     {
     
     }
