@@ -20,7 +20,7 @@ public:
         delete NetPtr;
     }
     virtual void start(){}
-    virtual void Call(
+    virtual MsgType Call(
         const std::string& FuncName,
         char* param,
         int param_size,

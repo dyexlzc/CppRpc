@@ -13,8 +13,9 @@ public:
     ~UDP(){
 
     }
-    virtual void sendAndrecv(char* buffer,int buffer_size,char* recverBuffer,int return_buffer_size){
+    virtual MsgType sendAndrecv(char* buffer,int buffer_size,char* recverBuffer,int return_buffer_size){
         //UDP发送方式
+        return MsgType(Success);
     }
 
 };
@@ -22,6 +23,7 @@ public:
 class TCP : public Network{
     boost::asio::ip::tcp::socket socket;    //TCP套接字
     boost::asio::ip::tcp::endpoint ep;      //服务器端点
+    char mBuffer[5000];
     //实现TCP客户端的链接
     void connect(){
         socket.connect(ep);
@@ -37,14 +39,17 @@ public:
     ~TCP(){
         socket.close();
     }
-    virtual void sendAndrecv(char* buffer,int buffer_size,char* recverBuffer,int return_buffer_size){
+    virtual MsgType sendAndrecv(char* buffer,int buffer_size,char* recverBuffer,int return_buffer_size){
         //TCP发送方式
         socket.send(
             boost::asio::buffer(buffer,buffer_size)
         );
         socket.receive(
-            boost::asio::buffer(recverBuffer,return_buffer_size)
+            boost::asio::buffer(mBuffer,sizeof(mBuffer))
         );
+        memcpy(&rm,mBuffer,sizeof(rm)); //填充Respond结构体
+        memcpy(recverBuffer,rm.data,return_buffer_size);
+        return rm.msgType;              //把服务器对此条消息的相应返回，自行做判断
     }
 };
 #endif

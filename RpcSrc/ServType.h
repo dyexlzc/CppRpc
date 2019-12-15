@@ -38,9 +38,10 @@ class ServTCP : public serverType{              //TCP服务器
     boost::asio::ip::tcp::socket   mSocket;       //临时的Socket
     char mBuffer[5000];                         //全局缓冲区
     DynamicFunc dynamicFunc;                    //用于动态接受函数call
+    NetMsg nm;         //接受从客户端发来的请求
+    RespondMsg rm;      //发送给客户端的响应
 
-
-    void HandleAccept(const boost::system::error_code& ec,SockPtr sp,int size);
+    void HandleAccept(const boost::system::error_code& ec,SockPtr sp);
     void HandleRead(const boost::system::error_code& ec,SockPtr sp);
     void HandleNull(const boost::system::error_code& ec){
         return;

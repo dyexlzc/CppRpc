@@ -1,6 +1,7 @@
 #ifndef _CPPRPC_H
 #define _CPPRPC_H
 #include <boost/asio.hpp>
+#include "../DynamicSo/interface.h"
 /*
     CppRpc框架设计
     一些主要的，全局的interface将会在这里定义
@@ -11,6 +12,7 @@ class Network{
     必须必须重写UDP/TCP
 */
 protected:
+    RespondMsg rm;
     std::string ServAddr;
     int mPort;
     boost::asio::io_service mio_Serv;
@@ -22,12 +24,11 @@ public:
 
     }
     virtual void connect()=0;
-    virtual void sendAndrecv(char* buffer,int buffer_size,char* recverBuffer,int return_buffer_size)=0;
+    virtual MsgType sendAndrecv(char* buffer,int buffer_size,char* recverBuffer,int return_buffer_size)=0;
 };
 
 //////////////////////////////////////////////////////////////
 class CppRpc{                           
-
 public:
     virtual void start()=0;          //服务器、客户端的启动,统一的父类
     virtual ~CppRpc(){}

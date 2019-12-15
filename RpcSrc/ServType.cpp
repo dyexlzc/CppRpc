@@ -8,7 +8,7 @@
 #include <boost/bind.hpp>
 #include <memory>
 #include <iostream>
-
+#include <boost/format.hpp>
 //TCP
 void ServTCP::accept(){
     //异步调用处理接收
@@ -30,43 +30,54 @@ void ServTCP::HandleRead(const boost::system::error_code& ec,SockPtr sp){
         boost::bind(&ServTCP::HandleAccept,
                     this,
                     boost::asio::placeholders::error,
-                    sp,
-                    boost::asio::placeholders::bytes_transferred)
+                    sp)
     );
 }
-void ServTCP::HandleAccept(const boost::system::error_code& ec,SockPtr sp,int size){
-    if(size==0){        //telnet在断开时会发送一个0字节的tcp包，必须在这里处理
-        char port_[5];
-        sprintf(port_,":%d",sp->remote_endpoint().port());
-        msg(error,sp->remote_endpoint().address().to_string()+port_+" has disconnected.");
-        sp->close();
-        sp.reset();     //reset析构socket对象
-        //return;
-        HandleNull(ec);
-    }
-
+void ServTCP::HandleAccept(const boost::system::error_code& ec,SockPtr sp){
+    
     //处理客户端accept
-    /*
-        RPC服务器的操作在这里
-    */
-    //buffere中数据的格式一定是DynamicSo/interface.h/NetMsg 的格式，客户端也要遵守这个格式打包数据
-    NetMsg msg;
-    memcpy(&msg,mBuffer,sizeof(msg));
-    dynamicFunc.Call(                       //获取动态调用
-        msg.FuncName,
-        msg.Param,
-        mBuffer
-    );
-    //处理完成,结果存放在mBuffer中，发回给客户端，然后客户端再根据自己传的数据来自己解析
-    sp->async_write_some(
-        boost::asio::buffer(mBuffer),
-        boost::bind(
-            &ServTCP::HandleRead,
-            this,
-            ec,
-            sp
-        )
-    );
+        /*
+            RPC服务器的操作在这里
+        */
+        //buffere中数据的格式一定是DynamicSo/interface.h/NetMsg 的格式，客户端也要遵守这个格式打包数据
+        if(ec){
+            msg(error,(boost::format("%1%:%2% has disconnect.")
+                %sp->remote_endpoint().address().to_string()
+                %sp->remote_endpoint().port()).str()
+            );
+            sp->close();
+            sp.reset();
+            return;
+        }
+        memcpy(&nm,mBuffer,sizeof(nm));
+        msg(info,(boost::format("%1%:%2% Call:【%3%】")
+                %sp->remote_endpoint().address().to_string()
+                %sp->remote_endpoint().port()
+                %std::string(nm.FuncName)).str()
+        );
+        if(!dynamicFunc.SoisExist(nm.FuncName)){  //如果so不存在
+            rm.msgType=DonotExist;              //告知客户端不存在该过程
+            msg(error,"Func .So doesn't exist");
+        }
+        else{
+            rm.msgType=Success;
+            dynamicFunc.Call(                       //获取动态调用
+                nm.FuncName,
+                nm.Param,
+                rm.data
+            );
+            //处理完成,结果存放在rm.data中，发回给客户端，然后客户端再根据自己传的数据来自己解析
+        }
+        memcpy(mBuffer,&rm,sizeof(rm));     //填充到缓冲区等待发送
+        sp->async_write_some(
+            boost::asio::buffer(mBuffer,sizeof(mBuffer)),
+            boost::bind(
+                &ServTCP::HandleRead,
+                this,
+                ec,
+                sp
+            )
+        );
     
 }   
 //////////////////////////////////////////////////////////////////////////////////

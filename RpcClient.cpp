@@ -15,15 +15,19 @@ int main(){
             }t;
             int result;         //保存计算结果
             cin>>t.a>>t.b;
-            client.Call(cmd,        //远程调用函数
+            if(client.Call(cmd,        //远程调用函数
                 (char*)&t,sizeof(t),
                 (char*)&result,sizeof(result)
-            );
-            cout<<boost::format("%1% %2% %3%=%4%")
+            )==Success){
+                cout<<boost::format("%1% %2% %3%=%4%")
                         %t.a
                         %cmd
                         %t.b
                         %result<<endl;
+            }else{
+                cout<<"Error ocure in server"<<endl;
+            }
+            
             continue;
         }
         if(cmd=="q"){
