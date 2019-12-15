@@ -10,9 +10,19 @@ class Network{
     统一的网络发送、接受interface
     必须必须重写UDP/TCP
 */
+protected:
+    std::string ServAddr;
+    int mPort;
+    boost::asio::io_service mio_Serv;
 public:
-    virtual void send(char* buffer,int buffer_size)=0;
-    virtual void recv(char* buffer,int buffer_size)=0;
+    Network(const std::string& servAddr,int port):
+        ServAddr(servAddr),
+        mPort(port)
+    {
+
+    }
+    virtual void connect()=0;
+    virtual void sendAndrecv(char* buffer,int buffer_size,char* recverBuffer,int return_buffer_size)=0;
 };
 
 //////////////////////////////////////////////////////////////

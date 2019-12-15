@@ -10,6 +10,8 @@ ServType.o:./RpcSrc/ServType.cpp
 
 client:Client.cpp
 	g++ Client.cpp -o Client -lboost_system -lpthread
+rpcclient:RpcClient.cpp
+	g++ RpcClient.cpp -o rc -lboost_system -lpthread
 clean:
 	rm -rf *.o 
 	rm ./Server
