@@ -57,7 +57,7 @@ void ServTCP::HandleAccept(const boost::system::error_code& ec,SockPtr sp){
         );
         if(!dynamicFunc.SoisExist(nm.FuncName)){  //如果so不存在
             rm.msgType=DonotExist;              //告知客户端不存在该过程
-            msg(error,"Func .So doesn't exist");
+            msg(error,"Func .so doesn't exist");
         }
         else{
             rm.msgType=Success;

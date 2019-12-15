@@ -30,6 +30,25 @@ int main(){
             
             continue;
         }
+        if(cmd=="login"){
+            struct loginStruct{
+                char usrname[10];
+                char pwd[10];
+            }usr;
+            cout<<"Username:";cin>>usr.usrname;
+            cout<<"Pwd:";cin>>usr.pwd;
+            char servMsg[50];
+            if(client.Call(cmd,        //远程调用函数
+                (char*)&usr,sizeof(usr),
+                (char*)servMsg,sizeof(servMsg)
+            )==Success){
+                cout<<boost::format("登录消息:%1%")
+                        %servMsg<<endl;
+            }else{
+                cout<<"Error ocure in server"<<endl;
+            }
+            continue;
+        }
         if(cmd=="q"){
             break;
         }
