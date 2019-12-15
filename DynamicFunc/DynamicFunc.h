@@ -1,6 +1,6 @@
 #ifndef _DF_H_
 #define _DF_H_
-#include "../DynamicSo/dLoad.hpp"   //引入ds文件
+#include "../CppdynamicLoad/dLoad.hpp"   //引入ds文件
 #include <unistd.h>
 ////////////////////////////////////////////////////////
 class DynamicFunc{

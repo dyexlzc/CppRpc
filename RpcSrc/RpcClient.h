@@ -3,7 +3,7 @@
 #include "CppRpc.h"
 #include <boost/asio.hpp>
 #include <string>
-#include"../DynamicSo/interface.h"
+#include"../CppdynamicLoad/interface.h"
 #include"ClientType.h"
 class CppRpcClient : public CppRpc{     //实现rpc客户端，向远程发送请求
     Network *NetPtr;                    //动态绑定UDP、TCP的发送方式

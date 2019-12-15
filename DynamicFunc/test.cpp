@@ -8,7 +8,7 @@ struct param_Add{
     int a,b;
 };
 int main(){
-    DynamicFunc df("../DynamicSo/");//指定so文件的位置
+    DynamicFunc df("../CppdynamicLoad/");//指定so文件的位置
     int result;             //申请内存保存结果
     struct param_Add pa;    //和服务端保持一致的参数格式
     cin>>pa.a>>pa.b;

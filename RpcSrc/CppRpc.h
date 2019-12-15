@@ -1,7 +1,7 @@
 #ifndef _CPPRPC_H
 #define _CPPRPC_H
 #include <boost/asio.hpp>
-#include "../DynamicSo/interface.h"
+#include "../CppdynamicLoad/interface.h"
 /*
     CppRpc框架设计
     一些主要的，全局的interface将会在这里定义

@@ -3,7 +3,7 @@
 */
 #include "ServType.h"
 #include "Msg.h"
-#include "../DynamicSo/interface.h"
+#include "../CppdynamicLoad/interface.h"
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <memory>
@@ -39,7 +39,7 @@ void ServTCP::HandleAccept(const boost::system::error_code& ec,SockPtr sp){
         /*
             RPC服务器的操作在这里
         */
-        //buffere中数据的格式一定是DynamicSo/interface.h/NetMsg 的格式，客户端也要遵守这个格式打包数据
+        //buffere中数据的格式一定是CppdynamicLoad/interface.h/NetMsg 的格式，客户端也要遵守这个格式打包数据
         if(ec){
             msg(error,(boost::format("%1%:%2% has disconnect.")
                 %sp->remote_endpoint().address().to_string()
