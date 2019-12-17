@@ -4,7 +4,7 @@
 using namespace std;
 int main(){
     CppRpcClient client(
-        new TCP("127.0.0.1",40232)
+        new TCP("192.168.1.102",40232)
     );
     string cmd;
     while(1){

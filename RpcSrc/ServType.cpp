@@ -25,7 +25,7 @@ void ServTCP::accept(){
     );
 }
 void ServTCP::HandleRead(const boost::system::error_code& ec,SockPtr sp){
-    sp->async_read_some(
+    sp->async_receive(
         boost::asio::buffer(mBuffer,sizeof(mBuffer)),
         boost::bind(&ServTCP::HandleAccept,
                     this,
@@ -55,6 +55,10 @@ void ServTCP::HandleAccept(const boost::system::error_code& ec,SockPtr sp){
                 %sp->remote_endpoint().port()
                 %std::string(nm.FuncName)).str()
         );
+        for(int i=0;i<50;i++){
+            std::cout<<(int)mBuffer[i]<<" ";
+        }
+        std::cout<<std::endl;
         if(!dynamicFunc.SoisExist(nm.FuncName)){  //如果so不存在
             rm.msgType=DonotExist;              //告知客户端不存在该过程
             msg(error,"Func .so doesn't exist");

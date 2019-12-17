@@ -8,7 +8,7 @@ using SockPtr=std::shared_ptr<boost::asio::ip::tcp::socket>;    //智能指针
 class ServUDP : public serverType{      //UDP服务器
     boost::asio::ip::udp::socket mServerSocket; //udp只需要一个服务器socket
     boost::asio::ip::udp::endpoint mClientEndpoint;
-    char mBuffer[5000];
+    char mBuffer[1200];
     virtual void accept();
     void HandleAccept(const boost::system::error_code& ec, int size);
     void HandleNull(){
@@ -36,7 +36,7 @@ public:
 class ServTCP : public serverType{              //TCP服务器
     boost::asio::ip::tcp::acceptor mAcceptor;     //tcp所需要的acceptor
     boost::asio::ip::tcp::socket   mSocket;       //临时的Socket
-    char mBuffer[5000];                         //全局缓冲区
+    char mBuffer[1200];                         //全局缓冲区
     DynamicFunc dynamicFunc;                    //用于动态接受函数call
     NetMsg nm;         //接受从客户端发来的请求
     RespondMsg rm;      //发送给客户端的响应

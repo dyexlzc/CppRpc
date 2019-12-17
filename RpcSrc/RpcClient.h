@@ -7,7 +7,7 @@
 #include"ClientType.h"
 class CppRpcClient : public CppRpc{     //实现rpc客户端，向远程发送请求
     Network *NetPtr;                    //动态绑定UDP、TCP的发送方式
-    char mBuffer[5000];
+    char mBuffer[1200];
     NetMsg msg;
 public:
     //客户端是阻塞的同步方式向服务器通信

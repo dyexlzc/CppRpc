@@ -1,5 +1,5 @@
 #include "RpcClient.h"
-
+#include <iostream>
 MsgType CppRpcClient::Call(
     const std::string& FuncName,
     char* param,
@@ -11,6 +11,11 @@ MsgType CppRpcClient::Call(
     strcpy(msg.FuncName,FuncName.c_str());  //填充函数名
     memcpy(msg.Param,param,param_size);     //填充函数参数体
     memcpy(mBuffer,&msg,sizeof(msg));       //把待发送的数据放入缓冲区
+    std::cout<<"buffer block:"<<std::endl;
+    for(int i=0;i<50;i++){
+        std::cout<<int(mBuffer[i])<<" ";
+    }
+    std::cout<<std::endl;
     MsgType mt=NetPtr->sendAndrecv(
         mBuffer,
         sizeof(mBuffer),
